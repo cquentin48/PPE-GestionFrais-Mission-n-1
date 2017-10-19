@@ -45,5 +45,8 @@ function cancelFrais(){
  * @param {type} sData
  */
 function readData(sData) {
+        //On met à jour les données
 	document.getElementById("resultat_op").value = sData;
+        //On affiche le bouton pour la mise à jour de la fiche
+        document.getElementByID("majFiche").style.display = 'block';
 }
