@@ -23,7 +23,10 @@ function getXMLHttpRequest() {
 	
 	return xhr;
 }
-
+/**
+ * Annule toutes les opérations que l'utilisateur du site souhaite retirer
+ * 
+ */
 function cancelFrais(){
 	var xhr = getXMLHttpRequest();
 	
@@ -33,7 +36,7 @@ function cancelFrais(){
 		}
 	};
 	
-	xhr.open("POST", "handlingFrais.php", true);
+	xhr.open("POST", "../../vues/v_MajMysqlRemove.php", true);
 	xhr.send(null);
 }
 

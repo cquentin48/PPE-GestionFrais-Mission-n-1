@@ -199,57 +199,6 @@ class PdoGsb
         $requetePrepare->execute();
         return $requetePrepare->fetchAll();
     }
-    
-    /**
-     * Modifie la base de donnée
-     */
-    public function updateTable($tableName, $tableData, $whereArrayClauses = ""){
-        //Présence d'un seul élément
-        if($tableData.size()==1){
-            foreach($tableData as $key => $select){
-                $selectClause = 'Set '.$key.' = '.$select;
-            }
-        }
-        else{
-            $finKey = end($tableData);//Récupère la clé de fin de tableau
-            $selectClause = "Set ";
-            foreach($tableData as $key => $select){
-                if($key == $finKey){//Si nous sommes en fin de table
-                    $selectClause = $selectClause.$key.' = '.$select;
-                }else{//Sinon
-                    $selectClause = $selectClause.$key.' = '.$select.',';
-                }
-                
-            }
-        }
-        if($whereArrayClauses.size()==0){
-            $whereClause = "";//On ne met rien dans la clause de condition "where"
-        }
-        //Présence d'un seul élément
-        else if($whereArrayClauses.size()==1){
-            foreach($whereArrayClauses as $key => $select){
-                $selectClause = 'Where '.$key.' = '.$select;
-            }
-        }
-        else{
-            $finKey = end($whereArrayClauses);//Récupère la clé de fin de tableau
-            $selectClause = "Where ";
-            foreach($whereArrayClauses as $key => $select){
-                if($key == $finKey){//Si nous sommes en fin de table
-                    $selectClause = $selectClause.$key.' = '.$select;
-                }else{//Sinon
-                    $selectClause = $selectClause.$key.' = '.$select.' AND ';
-                }
-                
-            }
-        }
-        $requetePrepare = PdoGsb::$monPdo->prepare(
-                'Update '.$tableName.'\n'
-                .$selectClause.'\n'
-                .$whereClause;
-                
-        );
-    }
 
     /**
      * Met à jour la table ligneFraisForfait
