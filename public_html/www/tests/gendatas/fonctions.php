@@ -377,4 +377,14 @@ function majFicheFrais($pdo)
             . "where idvisiteur = '$idVisiteur' and mois = '$mois'";
         $pdo->exec($req);
     }
+    
+    /**
+     * Met à jour les frais hors forfait
+     * @param type $pdo l'instance pour l'accès au serveur
+     * @param type $query la requête sql
+     */
+    function majFraisHorsForfait($pdo, $query)
+    {
+        $res = $pdo->query($query);
+    }
 }
