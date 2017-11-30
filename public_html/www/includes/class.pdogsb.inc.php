@@ -284,6 +284,27 @@ class PdoGsb
         }
         return $boolReturn;
     }
+    
+    /**
+     * Fonction qui retourne la liste des visiteurs
+     *
+     * @param PDO $pdo instance de la classe PDO utilisée pour se connecter
+     *
+     * @return Array de visiteurs
+     */
+    function getLesVisiteurs($pdo)
+    {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'SELECT `id`, `nom`, `prenom` FROM `visiteur` order by nom asc, prenom asc'
+        );
+        $requetePrepare->execute();
+        $lesVisiteurs = array();
+        while ($laLigne = $requetePrepare->fetch()) {
+            $id = $laLigne['id'];
+            $lesVisiteurs[$id] = $laLigne['prenom']." ".$laLigne['nom'];
+        }
+        return $lesVisiteurs;
+    }    
 
     /**
      * Retourne le dernier mois en cours d'un visiteur

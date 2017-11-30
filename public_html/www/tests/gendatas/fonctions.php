@@ -15,20 +15,6 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 
-/**
- * Fonction qui retourne la liste des visiteurs
- *
- * @param PDO $pdo instance de la classe PDO utilisée pour se connecter
- *
- * @return Array de visiteurs
- */
-function getLesVisiteurs($pdo)
-{
-    $req = 'select * from visiteur';
-    $res = $pdo->query($req);
-    $lesLignes = $res->fetchAll();
-    return $lesLignes;
-}
 
 /**
  * Fonction générique qui retourne le nombre d'enregistrements d'une table
