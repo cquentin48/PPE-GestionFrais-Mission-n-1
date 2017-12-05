@@ -28,7 +28,7 @@ function getXMLHttpRequest() {
  * Met à jour les mois 
  */
 function majMois(callback){
-        var handlingDataPhpFile = "../../vues/v_AffichageFicheFrais.php";
+        /*var handlingDataPhpFile = "../../vues/v_MajMysql.php";
 	var xhr = getXMLHttpRequest();
         
         //On retourne la clé de l'utilisateur (id dans la base de donnée)
@@ -43,7 +43,7 @@ function majMois(callback){
 
         xhr.open("POST", handlingDataPhpFile, true);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
-	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate);
+	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate);*/
 }
 
 /**
@@ -54,7 +54,7 @@ function majMois(callback){
  */
 function readData(sData) {
         //On met à jour les données
-        alert('Affichage dans fonction maj');
-	document.getElementById("form-group-mois").value = sData;
+        /*alert('ghkjfhd');
+	document.getElementById("form-group-mois").value = sData;*/
         //On affiche le bouton pour la mise à jour de la fiche
 }

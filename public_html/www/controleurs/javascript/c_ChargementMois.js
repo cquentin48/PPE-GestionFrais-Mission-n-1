@@ -33,26 +33,28 @@ function majMois(callback){
         
         //On retourne la clé de l'utilisateur (id dans la base de donnée)
         var selectedIndex = document.getElementById("lstVisiteur").value;
-	
+        var valeur = document.getElementById("lstMois").value;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
-                        readData(xhr.responseText);
+                        var text = readData(xhr.responseText);
+                        
 		}
 	};
 
-        xhr.open("GET", handlingDataPhpFile +"?userid=" + selectedIndex, true);
-	xhr.send(null);
+	xhr.open("POST", handlingDataPhpFile, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+	xhr.send("user_id=" + selectedIndex+"&operation='loading_date'");
 }
 
 /**
  * Modifie les données
  * @author Quentin CHAPEL
  * @version 0.5
- * @param {type} sData
+ * @param {type} oData
  */
-function readData(sData) {
+function readData(oData) {
         //On met à jour les données
-        alert('Affichage dans fonction maj');
-	document.getElementById("form-group-mois").value = sData;
-        //On affiche le bouton pour la mise à jour de la fiche
+        var updateForm = document.getElementById("lstMois");
+        updateForm.innerHTML = oData;
 }

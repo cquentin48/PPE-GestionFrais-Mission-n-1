@@ -15,11 +15,9 @@
  */
 ?>
 <!--Inclusion des scripts javascript-->
-<script type="text/javascript" src="controleurs/javascript/c_ChargementMois.js"></script>    
 <?php
 require_once 'includes/fct.inc.php';
 require_once 'includes/class.pdogsb.inc.php';
-require_once './vues/v_MajMysql.php';
 session_start();
 $pdo = PdoGsb::getPdoGsb();
 $estConnecte = estConnecte();
