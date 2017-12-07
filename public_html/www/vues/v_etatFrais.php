@@ -24,6 +24,13 @@
         <strong><u>Montant validé :</u></strong> <?php echo $montantValide ?>
     </div>
 </div>
+<div class="panel panel-primary" id ="tableauMajInfos" style = "visibility: hidden">
+    <div class="panel-heading" id = "tableauMajInfosTitre">Information sur la fiche
+        <?php echo $numMois . '-' . $numAnnee ?> : </div>
+    <div class="panel-body" id ="tableauMajInfosLibelle">
+
+    </div>
+</div>
 <div class="panel panel-info">
     <div class="panel-heading">Eléments forfaitisés</div>
     <table class="table table-bordered table-responsive">
@@ -51,11 +58,11 @@
     <div class="panel-heading">Descriptif des éléments hors forfait - 
         <?php echo $nbJustificatifs ?> justificatifs reçus</div>
         <form action = "result.php" method = "POST">
-    <table class="table table-bordered table-responsive">
+    <table id = "elementsHorsForfait" class="table table-bordered table-responsive">
         <tr>
             <th class="date">Date</th>
             <th class="libelle">Libellé</th>
-            <th class='montant'>Montant</th>                
+            <th class='montant'>Montant</th>
             <th class='montant'>Supprimer?</th>
         </tr>
         <?php
@@ -73,8 +80,14 @@
             </tr>
             <?php
         }
-        ?>
-            <input type = "submit" value = "Envoyer"> 
+        ?> 
         </table>
     </form>
+    <div class="col-md-4">
+        <input id="reporter" type="submit" value="Reporter" class="btn btn-success" onclick='reportFrais(this);'
+                   role="button">
+            <input id="valider" type="submit" value="Confirmer les frais" class="btn btn-danger"
+                   role="button">
+    </div>
+            
 </div>

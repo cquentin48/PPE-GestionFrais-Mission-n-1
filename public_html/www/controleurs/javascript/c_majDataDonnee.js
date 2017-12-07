@@ -29,6 +29,12 @@ function getXMLHttpRequest() {
  */
 function cancelFrais(){
 	var xhr = getXMLHttpRequest();
+        var page = "";
+        
+        //Elements de la maj des données
+        var date = $_POST['date'];
+        var userId = $_POST['visiteurId'];
+        var casescoches = returnCheckBoxList("delete");
 	
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
@@ -36,20 +42,42 @@ function cancelFrais(){
 		}
 	};
 	
-	xhr.open("POST", "../../vues/v_MajMysqlRemove.php", true);
-	xhr.send(null);
+        //Chargement dans la page de mise à jour
+	xhr.open("POST", page, true);
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	xhr.send("date="+date+"&userId="+userId+"reports="+casescoches);
 }
 
 
 /**
- * Modifie les données
+ * Modifie les données du tableau des élements de frais hors-forfait sur la page "Mes fiches de frais"
  * @author Quentin CHAPEL
  * @version 0.5
  * @param {type} sData
  */
 function readData(sData) {
         //On met à jour les données
-	document.getElementById("resultat_op").value = sData;
-        //On affiche le bouton pour la mise à jour de la fiche
-        document.getElementByID("majFiche").style.display = 'block';
+        document.getElementsByClassName("table table-bordered table-responsive").innerHTML = sData;
+        
+        //On met à jour la fenêtre d'information
+            //Affiche le tableau
+        document.getElementById("tableauMajInfos").style.visibity = 'visible';
+        document.getElementById("tableauMajInfosTitre").innerHTML += " : mise à jour des fiches hors-forfait"
+        document.getElementById("tableauMajInfosLibelle").innerHTML = " éléments ont été supprimés."
+}
+
+/**
+ * Retourne la liste des cases à cocher
+ * @param {type} list template pour le nom des cases à cocher
+ * @returns {returnCheckBoxList.checkedBoxTab} le tableau des cases cochées
+ */
+function returnCheckBoxList(list){
+    var i = 0;
+    var checkedBoxTab = array();
+    for(i = 0;i<list.size;i++){
+        if(document.getElementById(list+i).checked == true){
+            checkedBoxTab.push(list+i);
+        }
+    }
+    return checkedBoxTab;
 }

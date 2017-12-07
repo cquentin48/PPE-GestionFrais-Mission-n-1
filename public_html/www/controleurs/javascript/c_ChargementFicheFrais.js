@@ -25,10 +25,10 @@ function getXMLHttpRequest() {
 }
 
 /**
- * Met à jour les mois 
+ * Met à jour les fiches de frais
  */
 function majMois(callback){
-        /*var handlingDataPhpFile = "../../vues/v_MajMysql.php";
+        var handlingDataPhpFile = "../../vues/v_MajMysqlFrais.php";
 	var xhr = getXMLHttpRequest();
         
         //On retourne la clé de l'utilisateur (id dans la base de donnée)
@@ -42,8 +42,8 @@ function majMois(callback){
 	};
 
         xhr.open("POST", handlingDataPhpFile, true);
-        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
-	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate);*/
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate);
 }
 
 /**
@@ -53,8 +53,20 @@ function majMois(callback){
  * @param {type} sData
  */
 function readData(sData) {
-        //On met à jour les données
-        /*alert('ghkjfhd');
-	document.getElementById("form-group-mois").value = sData;*/
-        //On affiche le bouton pour la mise à jour de la fiche
+    var ficheHorsForfaitTab = document.getElementById("table table-bordered table-responsive");
+    //Tableau des cases cochées
+    var listeCasesCochees;
+    var i = 0, j = 0;
+    for(i; i<ficheHorsForfaitTab.rows.length;i++){
+        for(j;j<listeCasesCochees.size;j++){
+            if(i === j){
+                //On ajoute le texte "Reporte : " au début du libellé
+                ficheHorsForfaitTab.rows[i].cells[1].innerHTML = "REPORTE : "+ficheHorsForfaitTab.rows[i].cells[1].innerHTML;
+                
+                //On met en rouge
+                ficheHorsForfaitTab.rows[i].cells[1].style.color = "#FF0000";
+            }
+        }
+    }
+    ficheHorsForfaitTab.innerHTML = sData;
 }

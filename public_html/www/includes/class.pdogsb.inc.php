@@ -328,6 +328,36 @@ class PdoGsb
     }
 
     /**
+     * Report d'un mois les éléments de frais hors-forfait
+     * @param type $idVisiteur
+     * @param type $mois
+     * @param type $nouveauMois
+     */
+    public function reporter($idVisiteur, $mois, $nouveauMois)
+    {
+        $libelle;
+        //On récupère le libellé de la fiche dans la base de donnée
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'select libelle FROM lignefraishorsforfait'  
+            . "WHERE idvisiteur = $idVisiteur AND mois = $mois"
+        );
+        $requetePrepare->execute();
+        //On copie le résultat dans une variable
+        while ($laLigne = $requetePrepare->fetch()) {
+            $libelle = $laLigne['libelle'];
+        }
+        //On modifie ainsi les données
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'UPDATE lignefraishorsforfait'
+            . 'set libelle = "REFUSE : ".$libelle'
+            . 'set mois = $nouveauMois'
+            . 'set date = "cast(now() as date)"'    
+            . "WHERE idvisiteur = $idVisiteur AND mois = $mois"
+        );
+        $requetePrepare->execute();
+    }
+    
+    /**
      * Crée une nouvelle fiche de frais et les lignes de frais au forfait
      * pour un visiteur et un mois donnés
      *

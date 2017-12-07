@@ -14,7 +14,8 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
-<script type="text/javascript" src="controleurs/javascript/c_ChargementMois.js"></script>    
+<script type="text/javascript" src="controleurs/javascript/c_ChargementMois.js"></script> 
+<script type="text/javascript" src="controleurs/javascript/c_ficheValidee.js"></script> 
 <h2>Mes fiches de frais</h2>
 <div class="row">
     <div class="col-md-4">
@@ -28,7 +29,7 @@
                     <td>
                         <div id = "form-group-visiteur" class="form-group">
                             <label for="lstVisiteur" accesskey="n">Visiteur : </label>
-                            <select id="lstVisiteur" name="lstVisiteur" class="form-control" onchange ="majMois(this)">
+                            <select id="lstVisiteur" name="lstVisiteur" class="form-control" onchange ="majMois(this);">
                                 <option value ='-1' selected>
                                     Choisir un visiteur
                                 </option>
@@ -51,14 +52,10 @@
                     </td>
                 </tr>
             </table>
-            <input id="ok" type="submit" value="Valider" class="btn btn-success" 
+            <input id="ok" type="submit" value="Valider" class="btn btn-success"
                    role="button">
             <input id="annuler" type="reset" value="Effacer" class="btn btn-danger" 
-                   role="button">
-            <!--Initialement en mode invisible-->
-            <input id="reporter" type="submit" value="Reporter" class="btn btn-danger"
                    role="button">
         </form>
     </div>
 </div>
-<p id ="result"></p>
