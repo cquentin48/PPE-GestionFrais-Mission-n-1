@@ -24,13 +24,6 @@
         <strong><u>Montant validé :</u></strong> <?php echo $montantValide ?>
     </div>
 </div>
-<div class="panel panel-primary" id ="tableauMajInfos" style = "visibility: hidden">
-    <div class="panel-heading" id = "tableauMajInfosTitre">Information sur la fiche
-        <?php echo $numMois . '-' . $numAnnee ?> : </div>
-    <div class="panel-body" id ="tableauMajInfosLibelle">
-
-    </div>
-</div>
 <div class="panel panel-info">
     <div class="panel-heading">Eléments forfaitisés</div>
     <table class="table table-bordered table-responsive">
@@ -54,11 +47,18 @@
         </tr>
     </table>
 </div>
+<div class="panel panel-primary" id ="tableauMajInfos" style="visibility:hidden;">
+    <div class="panel-heading" id = "tableauMajInfosTitre">Information sur la fiche
+        <?php echo $numMois . '-' . $numAnnee ?> : </div>
+    <div class="panel-body" id ="tableauMajInfosLibelle">
+
+    </div>
+</div>
 <div class="panel panel-info">
     <div class="panel-heading">Descriptif des éléments hors forfait - 
         <?php echo $nbJustificatifs ?> justificatifs reçus</div>
         <form action = "result.php" method = "POST">
-    <table id = "elementsHorsForfait" class="table table-bordered table-responsive">
+    <table  class="table table-bordered table-responsive" id="elementsHorsForfait">
         <tr>
             <th class="date">Date</th>
             <th class="libelle">Libellé</th>
@@ -66,17 +66,18 @@
             <th class='montant'>Supprimer?</th>
         </tr>
         <?php
-        $delNumber = 0;
         foreach ($lesFraisHorsForfait as $unFraisHorsForfait) {
             $date = $unFraisHorsForfait['date'];
+            $id = $unFraisHorsForfait['id'];
             $libelle = htmlspecialchars($unFraisHorsForfait['libelle']);
             $montant = $unFraisHorsForfait['montant'];
         ?>
             <tr>
+                <td style="display:none;"><?php echo $id ?></td>
                 <td><?php echo $date ?></td>
                 <td><?php echo $libelle ?></td>
                 <td><?php echo $montant ?></td>
-                <td><input type = "checkbox" name = "<?php echo 'delete'.$delNumber; ?>" id = "<?php echo 'delete'.$delNumber; ?>" <?php $delNumber++; ?></td>
+                <td><input type = "checkbox" name = "<?php echo 'delete'.$id; ?>" id = "<?php echo 'delete'.$id; ?>"</td>
             </tr>
             <?php
         }
@@ -84,7 +85,7 @@
         </table>
     </form>
     <div class="col-md-4">
-        <input id="reporter" type="submit" value="Reporter" class="btn btn-success" onclick='reportFrais(this);'
+        <input id="reporter" type="submit" value="Reporter" class="btn btn-success" onclick="reportFrais(this);"
                    role="button">
             <input id="valider" type="submit" value="Confirmer les frais" class="btn btn-danger"
                    role="button">

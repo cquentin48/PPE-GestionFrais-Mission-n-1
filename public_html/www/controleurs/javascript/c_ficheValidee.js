@@ -3,31 +3,24 @@
 */
 /**
  * Retourne un tableau des cases à cocher cochées
- * @param {type} documentName
- * @param {type} checkBoxNameTemplate
- * @returns {undefined}
+ * @param {type} documentName le nom du tableau
+ * @param {type} checkBoxNameTemplate le prototype du nom des cases à cocher (sans l'indice)
+ * @return {type} la liste des cases cochées
  */
 function extractCheckBox(documentName,checkBoxNameTemplate){
-    var checkBoxArray = array();
+    var checkBoxArray = [];
     var tableDocument = document.getElementById(documentName);
-    alert(tableDocument.rows.length);
     var i = 0;
-    for(i = 0;i<tableDocument.rows.length-1;i++){
+    for(i = 1;i<tableDocument.rows.length;i++){
+        var checkBoxName = checkBoxNameTemplate+i;
         console.log("Tableau avec "+tableDocument.rows.length+" éléments.\n");
-        alert(checkBoxName);
         if(document.getElementById(checkBoxName).checked == true){
-            checkBoxArray.push(i);
+            //On ajoute l'élément à la liste
+            checkBoxArray.push(tableDocument.rows[i].cells[0].innerHTML);
         }
     }
-}
-
-/**
- * Mise à jour du libellé des élément hors-forfait avec l'inscription "Refusé"
- * @param {type} id
- * @returns {undefined}
- */
-function updateTextRefused(id){
-    document.getElementById("txtLibelleHF").value = "REFUSE"+ document.getElementById("txtLibelleHF").value;
+    alert(checkBoxArray);
+    return checkBoxArray;
 }
 
 function getXMLHttpRequest() {
@@ -58,6 +51,7 @@ function reportFrais(callback){
         var handlingDataPhpFile = "../../vues/v_MajMysqlFrais.php";
 	var xhr = getXMLHttpRequest();
         var checkBoxArray = extractCheckBox("elementsHorsForfait","delete");
+        alert(checkBoxArray);
         
         //On retourne la clé de l'utilisateur (id dans la base de donnée)
         var selectedIndexVisiteur = document.getElementById("lstVisiteur").value;
@@ -65,13 +59,13 @@ function reportFrais(callback){
 	
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
-                        readData(xhr.responseText, checkBoxArray);
+                        updateData(xhr.responseText, checkBoxArray);
 		}
 	};
 
         xhr.open("POST", handlingDataPhpFile, true);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate+"&checkBoxArray="+checkBoxArray);
+	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate+"&checkBoxArray="+checkBoxArray+"");
 }
 
 /**
@@ -79,8 +73,10 @@ function reportFrais(callback){
  * @author Quentin CHAPEL
  * @version 0.5
  * @param {type} sData
+ * @param {type} checkBoxArray la liste des cases cochées pour le report des fiches hors-forfait
  */
-function readData(sData) {
+function updateData(sData, checkBoxArray) {
+    console.error(sData);
     var ficheHorsForfaitTab = document.getElementById("elementsHorsForfait");
     var i = 0, j = 0;
     for(i = 1;i<ficheHorsForfaitTab.rows.length;i++){
@@ -88,9 +84,14 @@ function readData(sData) {
             if(i === j+1){
                 //Mise à jour des données
                 var libelle = ficheHorsForfaitTab.rows[i].cells[1].innerHTML;
-                ficheHorsForfaitTab.rows[i].cells[1].innerHTML = "REFUSE"+libelle;
-                ficheHorsForfaitTab.rows[i].cells[1].style.color = '#f00';
+                console.log("Opération : hors-forfait "+ficheHorsForfaitTab.rows[i].cells[1].innerHTML+" reporté au mois suivant.")
+                ficheHorsForfaitTab.rows[i].cells[2].innerHTML = "REFUSE : "+libelle;
+                ficheHorsForfaitTab.rows[i].cells[2].style.color = '#f00';
             }
         }
     }
+    
+    var operationInfoTableId = document.getElementById("tableauMajInfos");
+    operationInfoTableId.style.visibility='visible';
+    document.getElementById("tableauMajInfosLibelle").innerHTML = "Report de "+checkBoxArray.length+" élements au mois suivant."
 }

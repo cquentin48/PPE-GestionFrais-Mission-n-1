@@ -36,7 +36,7 @@ function majMois(callback){
         var valeur = document.getElementById("lstMois").value;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
-                        var text = readData(xhr.responseText);
+                        /*var text = */readData(xhr.responseText);
                         
 		}
 	};
