@@ -81,13 +81,13 @@
             </tr>
             <?php
         }
-        ?> 
+        ?>
         </table>
     </form>
     <div class="col-md-4">
         <input id="reporter" type="submit" value="Reporter" class="btn btn-success" onclick="reportFrais(this);"
                    role="button">
-            <input id="valider" type="submit" value="Confirmer les frais" class="btn btn-danger"
+            <input id="validerFrais" type="submit" value="Confirmer les frais" class="btn btn-danger"
                    role="button">
     </div>
             

@@ -78,6 +78,8 @@ class PdoGsb
     {
         if (PdoGsb::$monPdoGsb == null) {
             PdoGsb::$monPdoGsb = new PdoGsb();
+            //Affichage des erreurs dans les requêtes SQL
+            PdoGsb::$monPdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         return PdoGsb::$monPdoGsb;
     }
@@ -329,30 +331,54 @@ class PdoGsb
 
     /**
      * Report d'un mois les éléments de frais hors-forfait
-     * @param type $idVisiteur
-     * @param type $mois
+     * @param type $idFraisHorsForfait l'identifiant du frais hors-forfait
+     * @param nouveauMois le mois reporté
      * @param type $nouveauMois
      */
-    public function reporter($idVisiteur, $mois, $nouveauMois)
+    public function reporter($idFraisHorsForfait, $mois, $nouveauMois)
     {
-        $libelle;
+        $monPdo = PdoGsb::getPdoGsb();
         //On récupère le libellé de la fiche dans la base de donnée
         $requetePrepare = PdoGsb::$monPdo->prepare(
-            'select libelle FROM lignefraishorsforfait'  
-            . "WHERE idvisiteur = $idVisiteur AND mois = $mois"
+             'SELECT `libelle`'
+            .'from `lignefraishorsforfait`'
+            .'where `id` = :idFraisHorsForfait'
         );
+        $requetePrepare->bindParam(':idFraisHorsForfait', $idFraisHorsForfait, PDO::PARAM_INT);
         $requetePrepare->execute();
         //On copie le résultat dans une variable
-        while ($laLigne = $requetePrepare->fetch()) {
-            $libelle = $laLigne['libelle'];
-        }
+        $laLigne = $requetePrepare->fetch();
+        $libelle = $laLigne['libelle'];
         //On modifie ainsi les données
+        $nouveauLibelle = "REFUSE : ".$libelle;
         $requetePrepare = PdoGsb::$monPdo->prepare(
-            'UPDATE lignefraishorsforfait'
-            . 'set libelle = "REFUSE : ".$libelle'
-            . 'set mois = $nouveauMois'
-            . 'set date = "cast(now() as date)"'    
-            . "WHERE idvisiteur = $idVisiteur AND mois = $mois"
+            "UPDATE `lignefraishorsforfait`"
+            . "set libelle = '$nouveauLibelle',"
+            . "mois = $nouveauMois,"
+            . "date = cast(now() as date)"    
+            . "WHERE id = $idFraisHorsForfait"
+        );
+        $requetePrepare->execute();
+        if($requetePrepare){
+            echo "<script>console.log('Requête effectuée avec succès');</script>";
+        }else{
+            echo "<script>error.log('Il y a eu une erreur dans le report des frais-hors forfait au mois suivant');</script>";
+        }
+    }
+    
+    /**
+     * Validation de la fiche
+     * @param type $idVisiteur l'identifiant de l'utilisateur dans la base
+     * @param type $mois le mois de la fiche en cours
+     */
+    public function validerFiche($idVisiteur, $mois){
+        $monPdo = PdoGsb::getPdoGsb();
+        //On récupère le libellé de la fiche dans la base de donnée
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+             "UPDATE `fichefrais`"
+            ."SET `idetat` = 'VA',"
+            ."SET `datemodif` = cast(now() as date)"
+            ."where `idvisiteur` = $idVisiteur AND `mois` = $mois"
         );
         $requetePrepare->execute();
     }

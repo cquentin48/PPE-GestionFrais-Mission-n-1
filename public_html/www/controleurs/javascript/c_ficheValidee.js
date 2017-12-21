@@ -19,7 +19,6 @@ function extractCheckBox(documentName,checkBoxNameTemplate){
             checkBoxArray.push(tableDocument.rows[i].cells[0].innerHTML);
         }
     }
-    alert(checkBoxArray);
     return checkBoxArray;
 }
 
@@ -48,14 +47,14 @@ function getXMLHttpRequest() {
  * Met à jour les fiches de frais
  */
 function reportFrais(callback){
-        var handlingDataPhpFile = "../../vues/v_MajMysqlFrais.php";
+        var handlingDataPhpFile = "../../vues/v_ValidationFrais.php";
 	var xhr = getXMLHttpRequest();
         var checkBoxArray = extractCheckBox("elementsHorsForfait","delete");
-        alert(checkBoxArray);
+        checkBoxArray = JSON.stringify(checkBoxArray);
         
         //On retourne la clé de l'utilisateur (id dans la base de donnée)
         var selectedIndexVisiteur = document.getElementById("lstVisiteur").value;
-        var selectedDate = document.getElementById("lstVisiteur").value;
+        var selectedDate = document.getElementById("lstMois").value;
 	
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
@@ -65,7 +64,7 @@ function reportFrais(callback){
 
         xhr.open("POST", handlingDataPhpFile, true);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate+"&checkBoxArray="+checkBoxArray+"");
+	xhr.send("user_id="+selectedIndexVisiteur+"&date="+selectedDate);
 }
 
 /**
@@ -76,7 +75,6 @@ function reportFrais(callback){
  * @param {type} checkBoxArray la liste des cases cochées pour le report des fiches hors-forfait
  */
 function updateData(sData, checkBoxArray) {
-    console.error(sData);
     var ficheHorsForfaitTab = document.getElementById("elementsHorsForfait");
     var i = 0, j = 0;
     for(i = 1;i<ficheHorsForfaitTab.rows.length;i++){
@@ -92,6 +90,8 @@ function updateData(sData, checkBoxArray) {
     }
     
     var operationInfoTableId = document.getElementById("tableauMajInfos");
+    
+    //Affichage de la table de résultat
     operationInfoTableId.style.visibility='visible';
-    document.getElementById("tableauMajInfosLibelle").innerHTML = "Report de "+checkBoxArray.length+" élements au mois suivant."
+    document.getElementById("tableauMajInfosLibelle").innerHTML = sData;
 }

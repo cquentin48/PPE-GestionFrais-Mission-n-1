@@ -4,17 +4,17 @@
 
     /**
      * Met à jour la base de données pour les données
-     * @param int userId l'identifiant de l'utilisateur
      * @param String date le mois des fiches hors-forfait
      * @param Array(int) FraisHorsForfaitTab la liste des frais hors-forfait à reporter
      */
-    function reporterListeFraisHorsForfait($userId, $FraisHorsForfaitTab, $dateFrais) {
-
+    function reporterListeFraisHorsForfait($FraisHorsForfaitTab, $dateFrais, $idVisiteur) {
+        $i = 0;
         $dateReportee = reportDate($dateFrais);
-        $pdo = PdoGsb::getPdoGsb();
+        $monPdo = PdoGsb::getPdoGsb();
         //On met à jour la base de donnée Mysql
-        for ($i = 0; $i < 1/*$FraisHorsForfaitTab.size()*/; $i++) {
-            $pdo->reporter($userId, $dateFrais, $dateReportee);
+        for ($i = 0; $i < sizeOf($FraisHorsForfaitTab); $i++) {
+            $monPdo->creeNouvellesLignesFrais($idVisiteur, $dateReportee);
+            $monPdo->reporter($FraisHorsForfaitTab[$i], $dateFrais, $dateReportee);
         }
     }
     /**
@@ -23,19 +23,23 @@
      * @return String la date reportée
      */
     function reportDate($date) {
-        $dateReporte;
         //année et mois
-        $annee = intval(substr($date, -3, -1));
-        $mois = intval(substr($date, 0, 4));
+        $annee = intval(substr($date, 0, 4));
+        $mois = intval(substr($date, 4, 2));
         //Si nous sommes arrivés en fin d'année
-        if ($mois++ < 12) {
+        if ($mois >= 11) {
             $mois = 1;
             $annee++;
             //Sinon ...
         } else {
             $mois++;
         }
-        return($mois+$annee);
+        $annee = strval($annee);
+        if($mois<10){
+            return($annee."0".strval($mois));
+        }else{
+            return($annee.strval($mois));
+        }
     }
 
 ?>

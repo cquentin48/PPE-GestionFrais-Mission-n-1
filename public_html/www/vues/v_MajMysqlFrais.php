@@ -3,15 +3,10 @@
 include("../controleurs/c_MajMysql.php");
 $date = $_POST['date'];
 $idVisiteur = $_POST['user_id'];
-$checkBoxArray = $_POST['checkBoxArray'];
-if(is_array($checkBoxArray)){
-    echo "<pre>";
-    print_r($checkBoxArray);
-}else{
-    echo "pas un tableau";
-}
+$checkBoxArray = json_decode(stripslashes($_POST['checkBoxArray']));
 
 //MAJ données
 include_once('../controleurs/c_MajMysql.php');
-reporterListeFraisHorsForfait($idVisiteur, $checkBoxArray, $date);
+reporterListeFraisHorsForfait($checkBoxArray, $date, $idVisiteur);
+echo "Report de ".sizeof($checkBoxArray)."élément au mois prochain.";
 ?>
