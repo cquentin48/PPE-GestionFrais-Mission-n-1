@@ -14,8 +14,9 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
-<script type="text/javascript" src="../controleurs/javascript/c_ficheValidee.js"></script> 
-<script type="text/javascript" src="../controleurs/javascript/c_ChargementMois.js"></script> 
+<script type="text/javascript" src="../controleurs/javascript/c_ficheValidee.js"></script>
+<script type="text/javascript" src="../controleurs/javascript/c_reportFrais.js"></script>
+<script type="text/javascript" src="../controleurs/javascript/c_ChargementMois.js"></script>
 <h2>Mes fiches de frais</h2>
 <div class="row">
     <div class="col-md-4">

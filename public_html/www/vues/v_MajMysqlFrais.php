@@ -3,8 +3,8 @@
 include("../controleurs/c_MajMysql.php");
 $date = $_POST['date'];
 $idVisiteur = $_POST['user_id'];
-$checkBoxArray = json_decode(stripslashes($_POST['checkBoxArray']));
-
+$checkBoxArray = ($_POST['checkBoxArray']);
+print_r($checkBoxArray);
 //MAJ données
 include_once('../controleurs/c_MajMysql.php');
 reporterListeFraisHorsForfait($checkBoxArray, $date, $idVisiteur);

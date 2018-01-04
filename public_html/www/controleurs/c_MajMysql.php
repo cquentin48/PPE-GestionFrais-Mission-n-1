@@ -13,7 +13,7 @@
         $monPdo = PdoGsb::getPdoGsb();
         //On met à jour la base de donnée Mysql
         for ($i = 0; $i < sizeOf($FraisHorsForfaitTab); $i++) {
-            $monPdo->creeNouvellesLignesFrais($idVisiteur, $dateReportee);
+            //$monPdo->creeNouvellesLignesFrais($idVisiteur, $dateReportee);
             $monPdo->reporter($FraisHorsForfaitTab[$i], $dateFrais, $dateReportee);
         }
     }

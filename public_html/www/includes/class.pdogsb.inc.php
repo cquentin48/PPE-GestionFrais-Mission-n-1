@@ -373,14 +373,77 @@ class PdoGsb
      */
     public function validerFiche($idVisiteur, $mois){
         $monPdo = PdoGsb::getPdoGsb();
-        //On récupère le libellé de la fiche dans la base de donnée
+        $montantTotal = 0;
+        
+        //On calcul les frais forfaitisés
         $requetePrepare = PdoGsb::$monPdo->prepare(
-             "UPDATE `fichefrais`"
-            ."SET `idetat` = 'VA',"
-            ."SET `datemodif` = cast(now() as date)"
-            ."where `idvisiteur` = $idVisiteur AND `mois` = $mois"
+          "SELECT `idfraisforfait`, `quantite` FROM `lignefraisforfait`"
+        . "where `idvisiteur` = '$idVisiteur' and `mois` = '$mois'"              
         );
         $requetePrepare->execute();
+        
+        while($laLigne = $requetePrepare->fetch()){
+            //Calcul des frais forfaitisé par la boucle switch
+            switch($laLigne['idfraisforfait']){
+                //Forfait étape
+                case "ETP":
+                    $montantTotal += $laLigne['quantite']*110;
+                    break;
+                //Frais Kilométrique
+                case "KM":
+                    $montantTotal += $laLigne['quantite']*0.62;
+                    break;
+                //Nuitée hotel
+                case "NUI":
+                    $montantTotal += $laLigne['quantite']*80.00;
+                    break;
+                //Repas restaurant
+                case "REP":
+                    $montantTotal += $laLigne['quantite']*25.00;
+                    break;
+                //En cas d'erreur
+                default:
+                    break;
+            }
+        }
+        
+        //Calcul du coût des frais forfaitisés
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            "SELECT `montant`"
+          . "FROM `lignefraishorsforfait`"
+          . "where `idvisiteur` = '$idVisiteur' and `mois` = '$mois'"
+          );
+        $requetePrepare->execute();
+        while($laLigne = $requetePrepare->fetch()){
+            $montantTotal += $laLigne['montant'];
+        }
+        
+        //On transforme le montant total en variable flottante à deux chiffres
+        $montantTotal = sprintf("%.2f", $montantTotal);
+        //On récupère le libellé de la fiche dans la base de donnée
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            "UPDATE `fichefrais`"
+            ."SET `montantvalide` = $montantTotal,\n"
+            ."`datemodif` = cast(now() as date),\n"
+            ."`idetat` = 'VA'\n"
+            ."where `idvisiteur` = '$idVisiteur' AND `mois` = '$mois'"
+        );
+        $requetePrepare->execute();
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            "SELECT `nbjustificatifs`, `montantvalide`, `mois`, `prenom`, `nom` "
+            . "from fichefrais inner join visiteur on fichefrais.idvisiteur = visiteur.id "
+            . "where visiteur.id = '$idVisiteur' AND fichefrais.mois = '$mois'"    
+        );
+        $requetePrepare->execute();
+        while($laLigne = $requetePrepare->fetch()){
+            $mois = $laLigne['mois'];
+            $visiteur = $laLigne['prenom']." ".$laLigne['nom'];
+            $montantTotalFrais = $laLigne['montantvalide'];
+            $nbJustificatifs = $laLigne['nbjustificatifs'];
+            echo "La fiche du mois du mois '$mois' pour le visiteur '$visiteur' a été mis à jour.";
+            echo "\n";
+            echo "Montant total : $montantTotal || Nombre de justificatifs : $nbJustificatifs";
+        }
     }
     
     /**
