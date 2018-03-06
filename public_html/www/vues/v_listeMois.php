@@ -27,6 +27,10 @@
               method="post" role="form">
             <table>
                 <tr>
+                    <?php
+                        //S'il s'agit d'un utilisateur comptable
+                        if($_SESSION['comptable'] == 1){
+                    ?>
                     <td>
                         <div id = "form-group-visiteur" class="form-group">
                             <label for="lstVisiteur" accesskey="n">Visiteur : </label>
@@ -45,11 +49,34 @@
                             </select>
                         </div>
                     </td>
+                    <?php
+                        }
+                    ?>
                     <td>
                         <div id ="form-group-mois" class="form-group">
                                 <!--Ajouter ici l'id du mois sélectionné en plus de la liste-->
                             <label for="lstMois" accesskey="n">Mois : </label>
                             <select id="lstMois" name="lstMois" class="form-control">
+                                <?php
+                                if($_SESSION['comptable']==0){
+                                    foreach ($lesMois as $unMois) {
+                                        $mois = $unMois['mois'];
+                                        $numAnnee = $unMois['numAnnee'];
+                                        $numMois = $unMois['numMois'];
+                                        if ($mois == $moisASelectionner) {
+                                            ?>
+                                            <option selected value="<?php echo $mois ?>">
+                                                <?php echo $numMois . '/' . $numAnnee ?> </option>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <option value="<?php echo $mois ?>">
+                                                <?php echo $numMois . '/' . $numAnnee ?> </option>
+                                            <?php
+                                        }
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                     </td>

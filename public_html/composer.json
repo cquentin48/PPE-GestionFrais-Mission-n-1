@@ -1,0 +1,13 @@
+{
+    "require": {
+        "phpdocumentor/phpdocumentor": "2.*",
+		"phpoffice/phpword": "dev-master",
+		"setasign/fpdi": "1.*",
+        "setasign/fpdf": "1.8.1"
+    },
+	"autoload":{
+		"psr-4":{
+			"pdogsb\\": "www/includes/class.pdogsb.inc"
+		}
+	}
+}

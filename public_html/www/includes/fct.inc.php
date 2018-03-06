@@ -25,6 +25,32 @@ function estConnecte()
 }
 
 /**
+ * Création du tableau d'export pdf
+ * @param type $ficheFraisTab le tableau au format POST
+ * @param type $arrayIndexFormat le nom de base de la balise d'export
+ * @return array le tableau d'index d'export pdf
+ */
+function createIndexArrayExport($ficheFraisTab, $arrayIndexFormat){
+    //Chargement de la session
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    //Copie du tableau de la fiche de frais
+    $tabPDFExport = $_SESSION['ficheFrais'];
+    
+    //Parcours de la table de session
+    for($i = 0;$i<sizeof($tabPDFExport);$i++){
+        //Si la fiche de frais de mois ne doit pas être exportée
+        if(!isset($ficheFraisTab[$arrayIndexFormat.$i])){
+            //On enlève l'élément
+            unset($tabPDFExport[$i]);
+        }
+    }
+    //On retourne le tableau d'export
+    return $tabPDFExport;
+}
+
+/**
  * Enregistre dans une variable session les infos d'un visiteur
  *
  * @param String $idVisiteur ID du visiteur
@@ -33,11 +59,13 @@ function estConnecte()
  *
  * @return null
  */
-function connecter($idVisiteur, $nom, $prenom)
+function connecter($idVisiteur, $nom, $prenom, $comptable)
 {
+    session_start();
     $_SESSION['idVisiteur'] = $idVisiteur;
     $_SESSION['nom'] = $nom;
     $_SESSION['prenom'] = $prenom;
+    $_SESSION['comptable'] = $comptable;
     $_SESSION['visiteurSelectionne'] = -1;//On initialise la valeur de l'utilisateur sélectionné à -1 : pas d'utilisateur sélectionné
 }
 

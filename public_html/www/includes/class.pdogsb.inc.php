@@ -35,6 +35,7 @@
  * @version   Release: 1.0
  * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
  */
+//namespace pdogsb;
 
 class PdoGsb
 {
@@ -54,7 +55,8 @@ class PdoGsb
         PdoGsb::$monPdo = new PDO(
             PdoGsb::$serveur . ';' . PdoGsb::$bdd,
             PdoGsb::$user,
-            PdoGsb::$mdp
+            PdoGsb::$mdp,
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)    
         );
         PdoGsb::$monPdo->query('SET CHARACTER SET utf8');
     }
@@ -94,9 +96,12 @@ class PdoGsb
      */
     public function getInfosVisiteur($login, $mdp)
     {
+        $mdp = hash('sha256',$mdp);
+        echo $mdp;
         $requetePrepare = PdoGsb::$monPdo->prepare(
             'SELECT visiteur.id AS id, visiteur.nom AS nom, '
-            . 'visiteur.prenom AS prenom '
+            . 'visiteur.prenom AS prenom, '
+            . 'visiteur.comptable AS comptable '
             . 'FROM visiteur '
             . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
         );
@@ -130,10 +135,107 @@ class PdoGsb
         $requetePrepare->execute();
         $lesLignes = $requetePrepare->fetchAll();
         for ($i = 0; $i < count($lesLignes); $i++) {
-            $date = $lesLignes[$i]['date'];
-            $lesLignes[$i]['date'] = dateAnglaisVersFrancais($date);
+            if(!(strstr($lesLignes[$i]['libelle'], 'REFUSE : '))){
+                $date = $lesLignes[$i]['date'];
+                $lesLignes[$i]['date'] = dateAnglaisVersFrancais($date);
+            }else{
+                unset($lesLignes[$i]);
+            }
         }
         return $lesLignes;
+    }
+    
+    /*public function getMdp(){
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'SELECT `id`, `mdp` FROM `visiteur` '
+        );
+        $requetePrepare->execute();
+        $lesLignes = $requetePrepare->fetchAll();
+        $tabMdp = array();
+        for($i = 0; $i< count($lesLignes);$i++){
+            $key = $lesLignes[$i]['id'];
+            $value = hash('sha256', $lesLignes[$i]['mdp']);
+            $tabMdp[$key] = $value;
+            $requetePrepare = PdoGsb::$monPdo->prepare(
+                "UPDATE `visiteur` "
+              . "SET `mdp` = '$value'"
+              . "WHERE `id` = '$key'"
+            );
+            $requetePrepare->execute();
+        }
+        echo "<pre>";
+        print_r($tabMdp);
+        return $tabMdp;
+    }*/
+    
+    /**
+     * Retourne toutes les fiches validées
+     * @param type $idVisiteur l'identifiant du visiteur
+     * @return array la liste des fiches validées
+     */
+    public function getFichesValides($idVisiteur){
+        //Création de la variable de retour
+        $ficheFrais = array();
+        //Préparation de la requête sql pour la sélection des fiches validées
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+             "SELECT `mois`, `nbjustificatifs`, `montantvalide`"
+           . " from `fichefrais`"
+           . "where `idetat` = 'VA' AND `idVisiteur` = '$idVisiteur';"
+        );
+        //Exécution de la requête
+        $requetePrepare->execute();
+        //Capture des données de la requête
+        $rows = $requetePrepare->fetchAll();
+        //Formattage des données reçus de la requête sql dans la variable 'ficheFrais' => mois, nbjustificatifs, et montantvalide
+        for($i = 0; $i<sizeof($rows); $i++){
+            $ficheFrais[$i]['mois'] = $rows[$i]['mois'];
+            $ficheFrais[$i]['nbjustificatifs'] = $rows[$i]['nbjustificatifs'];
+            $ficheFrais[$i]['montantvalide'] = $rows[$i]['montantvalide'];
+        }
+        
+        //Pour chaque fiche, on ajoute les frais forfaitisés et les frais hors-forfait
+        for($i = 0; $i<sizeof($ficheFrais);$i++){
+            $mois = $ficheFrais[$i]['mois'];
+            $requetePrepare = PdoGsb::$monPdo->prepare(
+                         "SELECT `libelle`, `quantite`, (`quantite`*`montant`) as 'somme', `montant`"
+                       . "FROM `lignefraisforfait` INNER JOIN `fraisforfait`"
+                       . "on `lignefraisforfait`.`idfraisforfait` = `fraisforfait`.`id`"
+                       . "where `mois` = '$mois' AND `idVisiteur` = '$idVisiteur';"
+            );
+            $requetePrepare->execute();
+            $rows = $requetePrepare->fetchAll();
+            
+            if(sizeof($rows)!=0){//Si la requête retourne un résultat
+                $listeFraisForfaitises = array();
+                for($j = 0; $j<sizeof($rows);$j++){
+                    $listeFraisForfaitises[$j]['quantite'] = $rows[$j]['quantite'];
+                    $listeFraisForfaitises[$j]['montantunitaire'] = $rows[$j]['somme'];
+                    $listeFraisForfaitises[$j]['idfraisforfait'] = $rows[$j]['libelle'];
+                    $listeFraisForfaitises[$j]['somme'] = $rows[$j]['somme'];
+                }
+                $ficheFrais[$i]['listeFraisForfaitises'] = $listeFraisForfaitises;
+            }
+            
+            $requetePrepare = PdoGsb::$monPdo->prepare(
+                 "SELECT `libelle`, `date`, `montant`"
+               . "FROM `lignefraishorsforfait`"
+               . "where `mois` = '$mois' AND `idVisiteur` = '$idVisiteur';"
+            );
+            $requetePrepare->execute();
+            $rows = $requetePrepare->fetchAll();
+            
+            if(sizeof($rows)!=0){//Si la requête retourne un résultat
+                $listeFraisHorsForfait = array();
+                for($j = 0; $j<sizeof($rows);$j++){
+                    $listeFraisHorsForfait[$j]['libelle'] = $rows[$j]['libelle'];
+                    $listeFraisHorsForfait[$j]['date'] = $rows[$j]['date'];
+                    $listeFraisHorsForfait[$j]['montant'] = $rows[$j]['montant'];
+                }
+                $ficheFrais[$i]['listeFraisHorsForfait'] = $listeFraisHorsForfait;
+            }
+        }
+        $_SESSION['ficheFrais'] = $ficheFrais;
+        return $ficheFrais;
     }
 
     /**
@@ -200,6 +302,22 @@ class PdoGsb
         );
         $requetePrepare->execute();
         return $requetePrepare->fetchAll();
+    }
+    
+    /**
+     * Vérifie si le compte est visiteur ou comptable
+     * @param integer $idCompte l'identifiant du compte dans la base de données
+     * @return boolean 0-> Visiteur \n 1-> Comptable
+     */
+    public function estComptable($idCompte){
+        $requetePrepare = PdoGsb::$monPdo->Prepare(
+          "SELECT `comptable`"
+        . "from `visiteur`"
+        . "where `id` = '$idCompte'"        
+        );
+        $requetePrepare->execute();
+        $laLigne = $requetePrepare->fetch();
+        return $laLigne['comptable'];
     }
 
     /**

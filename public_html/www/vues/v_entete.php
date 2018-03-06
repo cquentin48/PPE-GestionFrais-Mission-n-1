@@ -34,14 +34,14 @@
                 ?>
             <div class="header">
                 <div class="row vertical-align">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <h1>
                             <img src="./images/logo.jpg" class="img-responsive" 
                                  alt="Laboratoire Galaxy-Swiss Bourdin" 
                                  title="Laboratoire Galaxy-Swiss Bourdin">
                         </h1>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <ul class="nav nav-pills pull-right" role="tablist">
                             <li <?php if (!$uc || $uc == 'accueil') { ?>class="active" <?php } ?>>
                                 <a href="index.php">
@@ -59,6 +59,12 @@
                                 <a href="index.php?uc=etatFrais&action=selectionnerMois">
                                     <span class="glyphicon glyphicon-list-alt"></span>
                                     Afficher mes fiches de frais
+                                </a>
+                            </li>
+                            <li <?php if ($uc == 'exporterFraisPdf') { ?>class="active"<?php } ?>>
+                                <a href="index.php?uc=exporterListePdf">
+                                    <span class="glyphicon glyphicon-list-alt"></span>
+                                    Exporter mes fiches de frais
                                 </a>
                             </li>
                             <li 

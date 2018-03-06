@@ -15,12 +15,27 @@
  */
 ?>
 <div id="accueil">
+    <?php
+        if($_SESSION['comptable'] == 0){
+    ?>
     <h2>
         Gestion des frais<small> - Visiteur : 
             <?php 
             echo $_SESSION['prenom'] . ' ' . $_SESSION['nom']
             ?></small>
     </h2>
+    <?php
+        }else{
+    ?>
+    <h2>
+        Gestion des frais<small> - Comptable : 
+            <?php 
+            echo $_SESSION['prenom'] . ' ' . $_SESSION['nom']
+            ?></small>
+    </h2>
+    <?php
+        }
+    ?>
 </div>
 <div class="row">
     <div class="col-md-12">
