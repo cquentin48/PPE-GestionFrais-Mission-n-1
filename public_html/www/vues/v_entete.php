@@ -49,24 +49,40 @@
                                     Accueil
                                 </a>
                             </li>
-                            <li <?php if ($uc == 'gererFrais') { ?>class="active"<?php } ?>>
-                                <a href="index.php?uc=gererFrais&action=saisirFrais">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                    Renseigner la fiche de frais
-                                </a>
-                            </li>
-                            <li <?php if ($uc == 'etatFrais') { ?>class="active"<?php } ?>>
-                                <a href="index.php?uc=etatFrais&action=selectionnerMois">
-                                    <span class="glyphicon glyphicon-list-alt"></span>
-                                    Afficher mes fiches de frais
-                                </a>
-                            </li>
-                            <li <?php if ($uc == 'exporterFraisPdf') { ?>class="active"<?php } ?>>
-                                <a href="index.php?uc=exporterListePdf">
-                                    <span class="glyphicon glyphicon-list-alt"></span>
-                                    Exporter mes fiches de frais
-                                </a>
-                            </li>
+                            <?php if($_SESSION['comptable'] == 1){ ?>
+                                <li <?php if ($uc == 'validerFrais') { ?>class="active"<?php } ?>>
+                                    <a href="index.php?uc=validerFrais&action=saisirFrais">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                        Valider la Fiche de Frais
+                                    </a>
+                                </li>
+                                <li <?php if ($uc == 'suivrePaiementFrais') { ?>class="active"<?php } ?>>
+                                    <a href="index.php?uc=suivrePaiementFrais&action=selectionnerMois">
+                                        <span class="glyphicon glyphicon-euro"></span>
+                                        Suivre le paiement des fiches de frais
+                                    </a>
+                                </li>
+                            <?php } ?>
+                            <?php if($_SESSION['comptable'] == 0){ ?>
+                                <li <?php if ($uc == 'gererFrais') { ?>class="active"<?php } ?>>
+                                    <a href="index.php?uc=gererFrais&action=saisirFrais">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                        Renseigner la fiche de frais
+                                    </a>
+                                </li>
+                                <li <?php if ($uc == 'etatFrais') { ?>class="active"<?php } ?>>
+                                    <a href="index.php?uc=etatFrais&action=selectionnerMois">
+                                        <span class="glyphicon glyphicon-list-alt"></span>
+                                        Afficher mes fiches de frais
+                                    </a>
+                                </li>
+                                <li <?php if ($uc == 'exporterFraisPdf') { ?>class="active"<?php } ?>>
+                                    <a href="index.php?uc=exporterListePdf">
+                                        <span class="glyphicon glyphicon-list-alt"></span>
+                                        Exporter mes fiches de frais
+                                    </a>
+                                </li>
+                            <?php } ?>
                             <li 
                             <?php if ($uc == 'deconnexion') { ?>class="active"<?php } ?>>
                                 <a href="index.php?uc=deconnexion&action=demandeDeconnexion">

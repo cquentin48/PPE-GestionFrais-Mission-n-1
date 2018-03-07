@@ -28,24 +28,47 @@ if ($uc && !$estConnecte) {
 } elseif (empty($uc)) {
     $uc = 'accueil';
 }
-switch ($uc) {
-    case 'connexion':
-        include 'controleurs/c_connexion.php';
-        break;
-    case 'accueil':
-        include 'controleurs/c_accueil.php';
-        break;
-    case 'gererFrais':
-        include 'controleurs/c_gererFrais.php';
-        break;
-    case 'exporterListePdf':
-        include 'controleurs/c_exporterFrais.php';
-        break;
-    case 'etatFrais':
-        include 'controleurs/c_etatFrais.php';
-        break;
-    case 'deconnexion':
-        include 'controleurs/c_deconnexion.php';
-        break;
+//S'il s'agit d'un compte comptable
+if($_SESSION['comptable']==1){
+    switch ($uc) {
+        case 'connexion':
+            include 'controleurs/c_connexion.php';
+            break;
+        case 'accueil':
+            include 'controleurs/c_accueil.php';
+            break;
+        case 'validerFrais':
+            include 'controleurs/c_gererFrais.php';
+            break;
+        case 'suivrePaiementFrais':
+            include 'controleurs/c_suivrePaiementFrais.php';
+            break;
+        case 'deconnexion':
+            include 'controleurs/c_deconnexion.php';
+            break;
+    }   
+}
+//S'il s'agit d'un compte visiteur
+else{
+    switch ($uc) {
+        case 'connexion':
+            include 'controleurs/c_connexion.php';
+            break;
+        case 'accueil':
+            include 'controleurs/c_accueil.php';
+            break;
+        case 'gererFrais':
+            include 'controleurs/c_gererFrais.php';
+            break;
+        case 'exporterListePdf':
+            include 'controleurs/c_exporterFrais.php';
+            break;
+        case 'etatFrais':
+            include 'controleurs/c_etatFrais.php';
+            break;
+        case 'deconnexion':
+            include 'controleurs/c_deconnexion.php';
+            break;
+    } 
 }
 require 'vues/v_pied.php';

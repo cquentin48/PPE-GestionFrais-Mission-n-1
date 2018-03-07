@@ -329,8 +329,6 @@ class PdoGsb
      * @param String $mois       Mois sous la forme aaaamm
      * @param Array  $lesFrais   tableau associatif de clé idFrais et
      *                           de valeur la quantité pour ce frais
-     *
-     * @return null
      */
     public function majFraisForfait($idVisiteur, $mois, $lesFrais)
     {
@@ -353,14 +351,44 @@ class PdoGsb
     }
 
     /**
+     * Met à jour la table ligneFraisHorsForfait
+     * Met à jour la table ligneFraisHorsForfait pour un visiteur et
+     * un mois donné en enregistrant le nouveau frais hors-forfait
+     *
+     * @param String $idVisiteur               ID du visiteur
+     * @param String $idFraisHorsForfait       L'identifiant du frais hors-forfait
+     * @param String $mois                     Le mois du frais hors-forfait
+     * @param String $libelle                  La description du frais hors-forfait
+     * @param String $date                     La date du frais hors-forfait
+     * @param Numeric $montant                 Le montant du frais hors-forfait
+     */
+    public function majFraisHorsForfait($idVisiteur, $idFraisHorsForfait, $mois, $libelle, $date, $montant)
+    {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'UPDATE lignefraishorsforfait '
+          . 'SET lignefraishorsforfait.libelle = :unLibelle, '
+          . 'lignefraishorsforfait.date = :uneDate, '
+          . 'lignefraishorsforfait.montant = :unMontant '
+          . 'WHERE lignefraishorsforfait.idvisiteur = :unIdVisiteur '
+          . 'AND lignefraisforfait.mois = :unMois '
+          . 'AND lignefraisforfait.idfraisforfait = :idFraisHorsForfait'
+        );
+        $requetePrepare->bindParam(':unLibelle', $libelle, PDO::PARAM_INT);
+        $requetePrepare->bindParam(':uneDate', $date, PDO::PARAM_INT);
+        $requetePrepare->bindParam(':unMontant', $montant, PDO::PARAM_INT);
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':idFraisHorsForfait', $idFraisHorsForfait, PDO::PARAM_STR);
+        $requetePrepare->execute();
+    }
+
+    /**
      * Met à jour le nombre de justificatifs de la table ficheFrais
      * pour le mois et le visiteur concerné
      *
      * @param String  $idVisiteur      ID du visiteur
      * @param String  $mois            Mois sous la forme aaaamm
      * @param Integer $nbJustificatifs Nombre de justificatifs
-     *
-     * @return null
      */
     public function majNbJustificatifs($idVisiteur, $mois, $nbJustificatifs)
     {

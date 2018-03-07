@@ -66,7 +66,11 @@ function connecter($idVisiteur, $nom, $prenom, $comptable)
     $_SESSION['nom'] = $nom;
     $_SESSION['prenom'] = $prenom;
     $_SESSION['comptable'] = $comptable;
-    $_SESSION['visiteurSelectionne'] = -1;//On initialise la valeur de l'utilisateur sélectionné à -1 : pas d'utilisateur sélectionné
+    //S'il s'agit d'un compte comptable
+    if($_SESSION['comptable'] == 1){
+        $_SESSION['visiteurSelectionne'] = -1;//On initialise la valeur de l'utilisateur sélectionné à -1 : pas d'utilisateur sélectionné
+    }
+    
 }
 
 /**

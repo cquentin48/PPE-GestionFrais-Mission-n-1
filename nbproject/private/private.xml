@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/controleurs/javascript/c_exportPDF.js</file>
-            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/vues/v_exportPDF.php</file>
-            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/includes/class.pdf.inc.php</file>
-            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/includes/fct.inc.php</file>
-            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/controleurs/c_exporterFrais.php</file>
+            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/includes/class.pdogsb.inc.php</file>
+            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/vues/v_validationFraisComptable.php</file>
+            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/controleurs/javascript/c_majFraisHorsForfaitComptable.js</file>
+            <file>file:/C:/Users/Caesar01/Documents/Projets_PPE_CNED/PPE1/public_html/www/controleurs/c_ValidationFraisComptable.php</file>
         </group>
     </open-files>
 </project-private>

@@ -28,7 +28,26 @@
             <table>
                 <tr>
                     <td>
+                        <div id = "form-group-visiteur" class="form-group">
+                            <label for="lstVisiteur" accesskey="n">Visiteur : </label>
+                            <select id="lstVisiteur" name="lstVisiteur" class="form-control" onchange ="majMois(this);">
+                                <option value ='-1' selected>
+                                    Choisir le visiteur :
+                                </option>
+                                <!--Ajouter ici l'id du visiteur sélectionné-->
+                                <?php
+                                    foreach ($lesVisiteurs as $key => $unVisiteur) {
+                                        ?><option value="<?php echo $key;?>">
+                                            <?php echo $unVisiteur;?>
+                                        </option>
+                                <?php    }
+                                ?>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
                         <div id ="form-group-mois" class="form-group">
+                                <!--Ajouter ici l'id du mois sélectionné en plus de la liste-->
                             <label for="lstMois" accesskey="n">Mois : </label>
                             <select id="lstMois" name="lstMois" class="form-control">
                                 <?php
