@@ -29,6 +29,34 @@
                     $idFrais = $unFrais['idfrais'];
                     $libelle = htmlspecialchars($unFrais['libelle']);
                     $quantite = $unFrais['quantite']; ?>
+                    <?php
+                        if($idFrais == "KM"){
+                    ?>
+                    <div class="form-group">
+                        <label for="idFrais"><?php echo $libelle ?></label>
+                        <br/>
+                        <label for="typeEssence">Type d'essence</label>
+                        <Select name = "typeEssence" size = "1">
+                            <OPTION>Diesel</OPTION>
+                            <OPTION>Essence</OPTION>
+                        </Select>
+                        <br/>
+                        <label for="idFrais">Nombre de chevaux</label>
+                        <Select name = "nbCV" size = "1">
+                            <OPTION<?php if($lesFraisForfait) ?>>4CV</OPTION>
+                            <OPTION>5CV ou plus</OPTION>
+                        </Select>
+                        <br/>
+                        <label for="nbKM">Nombre de kilomètres : </label>
+                        <input type="texte" id="nbFraisKM" 
+                               name="nbKM"
+                               size="10" maxlength="5" 
+                               value="<?php echo $quantite ?>" 
+                               class="form-control">
+                    </div>
+                    <?php
+                        }else{
+                    ?>
                     <div class="form-group">
                         <label for="idFrais"><?php echo $libelle ?></label>
                         <input type="text" id="idFrais" 
@@ -37,6 +65,9 @@
                                value="<?php echo $quantite ?>" 
                                class="form-control">
                     </div>
+                    <?php
+                        }
+                    ?>
                     <?php
                 }
                 ?>

@@ -108,6 +108,19 @@ class PdoGsb
         $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
         $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
         $requetePrepare->execute();
+        
+        
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+             "SELECT `typeEssence`, `nbCV`"
+           . " from `visiteur`"
+           . "where `id` = '$idVisiteur';"
+        );
+        //Exécution de la requête
+        $requetePrepare->execute();
+        
+        //Récupération des données
+        $rows = $requetePrepare->fetchAll();
+        
         return $requetePrepare->fetch();
     }
 
@@ -176,6 +189,7 @@ class PdoGsb
     public function getFichesValides($idVisiteur){
         //Création de la variable de retour
         $ficheFrais = array();
+        
         //Préparation de la requête sql pour la sélection des fiches validées
         $requetePrepare = PdoGsb::$monPdo->prepare(
              "SELECT `mois`, `nbjustificatifs`, `montantvalide`"
@@ -184,6 +198,7 @@ class PdoGsb
         );
         //Exécution de la requête
         $requetePrepare->execute();
+
         //Capture des données de la requête
         $rows = $requetePrepare->fetchAll();
         //Formattage des données reçus de la requête sql dans la variable 'ficheFrais' => mois, nbjustificatifs, et montantvalide
@@ -332,9 +347,69 @@ class PdoGsb
      */
     public function majFraisForfait($idVisiteur, $mois, $lesFrais)
     {
+        //On récupère les clés des cellules du tableau
         $lesCles = array_keys($lesFrais);
+        
+        //On initialise la quantité à 0 pour éviter les erreurs de compilations
+        $qte = 0;
+        
+        //On parcours le tableau
         foreach ($lesCles as $unIdFrais) {
-            $qte = $lesFrais[$unIdFrais];
+            if($unIdFrais == "KM"){
+                //On parcours le type d'essence
+                switch($lesFrais[$unIdFrais]['typeEssence']){
+                    //Diesel
+                    case "Diesel":
+                        //On parcours le nombre de CV
+                        switch($lesFrais[$unIdFrais]['nbCV']){
+                            //4 Chevaux
+                            case "4CV":
+                                $qte = 0.52*$lesFrais[$unIdFrais]['nbKM'];
+                                
+                                //On prépare la requête SQL de mise à jour
+                                $requetePrepare = PdoGSB::$monPdo->prepare(
+                                    'UPDATE visiteur '
+                                    . 'SET visiteur.typeEssence = :essence'
+                                    . ', visiteur.nbCV = :nbCV '
+                                    . 'WHERE visiteur.id = :unIdVisiteur '
+                                );
+                                
+                                //On ajoute les paramètres
+                                $requetePrepare->bindParam(':essence', $lesFrais[$unIdFrais]['typeEssence'], PDO::PARAM_STR);
+                                $requetePrepare->bindParam(':nbCV', $lesFrais[$unIdFrais]['nbCV'], PDO::PARAM_STR);
+                                $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+                                $requetePrepare->execute();
+                            break;
+                        
+                            //5 ou 6 chevaux
+                            case "5CV ou plus":
+                                $qte = 0.58*$lesFrais[$unIdFrais]['nbKM'];
+                            break;
+                        }
+                    break;
+                
+                    //Essence
+                    case "Essence":
+                        //On parcours le nombre de CV
+                        switch($lesFrais[$unIdFrais]['nbCV']){
+                            //4 Chevaux
+                            case "4CV":
+                                $qte = 0.62*$lesFrais[$unIdFrais]['nbKM'];
+                            break;
+                        
+                            //5 ou 6 chevaux
+                            case "5CV ou plus":
+                                $qte = 0.67*$lesFrais[$unIdFrais]['nbKM'];
+                            break;
+                        }
+                    break;
+                }
+            }
+            
+            //Pour les autres frais forfaitisés
+            else{
+                $qte = $lesFrais[$unIdFrais];
+            }
             $requetePrepare = PdoGSB::$monPdo->prepare(
                 'UPDATE lignefraisforfait '
                 . 'SET lignefraisforfait.quantite = :uneQte '

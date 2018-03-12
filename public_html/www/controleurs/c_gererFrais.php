@@ -26,8 +26,18 @@ case 'saisirFrais':
     }
     break;
 case 'validerMajFraisForfait':
+    //On récupère les frais forfaitisés dans le tableau 'lesFrais'
     $lesFrais = filter_input(INPUT_POST, 'lesFrais', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
-    if (lesQteFraisValides($lesFrais)) {
+    //On récupèr les données du kilométrage
+    $lesFrais['KM']['nbCV'] = $_POST['nbCV'];
+    $lesFrais['KM']['typeEssence'] = $_POST['typeEssence'];
+    $lesFrais['KM']['nbKM'] = $_POST['nbKM'];
+    //On crée un tableau pour les valeurs des frais forfaitisés
+    $tabFraisForfaitises = filter_input(INPUT_POST, 'lesFrais', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
+    //On ajoute le nombre de kilométrage
+    $tabFraisForfaitises['KM'] = $_POST['nbKM'];
+    //On vérifie si ces données sont valides
+    if (lesQteFraisValides($tabFraisForfaitises)) {
         $pdo->majFraisForfait($idVisiteur, $mois, $lesFrais);
     } else {
         ajouterErreur('Les valeurs des frais doivent être numériques');
